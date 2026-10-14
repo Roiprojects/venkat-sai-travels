@@ -29,7 +29,14 @@ function int(name: string, fallback: number): number {
 function list(name: string): string[] {
   return (process.env[name] || '')
     .split(',')
-    .map((s) => s.trim().replace(/\/$/, ''))
+    .flatMap((s) => {
+      const trimmed = s.trim().replace(/\/$/, '')
+      if (!trimmed) return []
+      if (!/^https?:\/\//i.test(trimmed)) {
+        return [trimmed, `https://${trimmed}`, `http://${trimmed}`]
+      }
+      return [trimmed]
+    })
     .filter(Boolean)
 }
 
