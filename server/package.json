@@ -1,0 +1,11 @@
+{
+  "name": "postgrest-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "postgrest_server.mjs",
+  "dependencies": {
+    "express": "^4.22.3",
+    "pg": "^8.23.0"
+  }
+}

@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg:            #FFFFFF;
+  --color-bg-alt:        #FAFAF8;
+  --color-bg-section:    #F7F7F5;
+  --color-card-bg:       #FFFFFF;
+  --color-brand-red:     #B5121B;
+  --color-brand-light:   #D71920;
+  --color-brand-dark:    #8F0E15;
+  --color-border:        #E5E5E5;
+  --color-text-main:     #222222;
+  --color-text-heading:  #171717;
+  --color-text-muted:    #666666;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #F7F7F5; }
+::-webkit-scrollbar-thumb { background: #D71920; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #B5121B; }
+
+::selection { background: rgba(181, 18, 27, 0.15); color: #8F0E15; }
+
+@layer components {
+  /* ── Light Glass Utilities ── */
+  .glass {
+    @apply backdrop-blur-xl shadow-glass;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(229, 229, 229, 0.8);
+  }
+  .glass-panel {
+    @apply backdrop-blur-2xl shadow-glass;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(229, 229, 229, 0.9);
+  }
+  .glass-card {
+    @apply backdrop-blur-xl shadow-card transition-all duration-400 rounded-3xl;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+  }
+  .glass-card:hover {
+    border-color: rgba(181, 18, 27, 0.35);
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.08), 0 0 16px rgba(181, 18, 27, 0.06);
+  }
+  .glass-red {
+    @apply backdrop-blur-xl;
+    background-color: rgba(181, 18, 27, 0.06);
+    border: 1px solid rgba(181, 18, 27, 0.2);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     ── ANIMATED RED LUXURY BUTTON SYSTEM ──
+     ══════════════════════════════════════════════════════════════ */
+
+  /* 1. Primary Red Button */
+  .btn-primary, .btn-red, .btn-gold {
+    @apply relative overflow-hidden font-button font-bold text-white px-8 py-3.5 rounded-full
+           shadow-[0_4px_18px_rgba(181,18,27,0.3)]
+           hover:shadow-[0_8px_28px_rgba(181,18,27,0.45)]
+           hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]
+           transition-all duration-300 inline-flex items-center justify-center gap-2 z-10 select-none;
+    background: linear-gradient(135deg, #D71920 0%, #B5121B 55%, #8F0E15 100%);
+    background-size: 200% 200%;
+    animation: gradientFlow 6s ease infinite;
+  }
+  .btn-primary:hover, .btn-red:hover, .btn-gold:hover {
+    background: linear-gradient(135deg, #B5121B 0%, #8F0E15 100%);
+  }
+
+  /* Specular Light Sweep on primary button */
+  .btn-primary::after, .btn-red::after, .btn-gold::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 35%;
+    height: 200%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 100%
+    );
+    transform: rotate(25deg);
+    animation: lightSweep 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* 2. Secondary Outline Button with Red Border */
+  .btn-outline, .btn-outline-red, .btn-outline-gold {
+    @apply relative overflow-hidden font-button font-bold px-8 py-3.5 rounded-full
+           bg-white border transition-all duration-300 inline-flex items-center justify-center gap-2 z-10 select-none;
+    border-color: #B5121B;
+    color: #B5121B;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  }
+  .btn-outline:hover, .btn-outline-red:hover, .btn-outline-gold:hover {
+    background-color: #B5121B;
+    color: #FFFFFF;
+    border-color: #B5121B;
+    box-shadow: 0 6px 20px rgba(181, 18, 27, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* 3. Secondary Filled Dark Red Button */
+  .btn-secondary, .btn-crimson {
+    @apply relative overflow-hidden font-button font-bold text-white px-8 py-3.5 rounded-full
+           shadow-[0_4px_16px_rgba(143,14,21,0.3)]
+           hover:shadow-[0_8px_24px_rgba(143,14,21,0.45)]
+           hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]
+           transition-all duration-300 inline-flex items-center justify-center gap-2 z-10 select-none;
+    background-color: #8F0E15;
+  }
+  .btn-secondary:hover, .btn-crimson:hover {
+    background-color: #6C0B10;
+  }
+
+  /* ── Typography ── */
+  .section-heading {
+    @apply font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#171717];
+  }
+  .section-subheading {
+    @apply font-body text-[#666666] text-base sm:text-lg mt-3 leading-relaxed font-light;
+  }
+  .red-text, .gold-text, .blue-text {
+    @apply text-[#B5121B];
+  }
+  .crimson-text {
+    @apply text-[#8F0E15];
+  }
+
+  /* ── Cards & Structure ── */
+  .luxury-card {
+    @apply bg-white rounded-3xl transition-all duration-400;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  }
+  .luxury-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(181, 18, 27, 0.35);
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.1), 0 0 16px rgba(181, 18, 27, 0.06);
+  }
+  .luxury-divider {
+    @apply w-16 h-1 rounded-full mx-auto my-4;
+    background: linear-gradient(to right, #D71920, #B5121B, #8F0E15);
+  }
+
+  /* ── Spacing ── */
+  .section-padding { @apply py-12 sm:py-16 px-4 sm:px-8 lg:px-16; }
+
+  /* ── Badges ── */
+  .badge-red, .badge-gold, .badge-blue {
+    @apply inline-flex items-center gap-1.5 font-button text-xs font-bold tracking-wider uppercase px-4 py-1.5 rounded-full;
+    background-color: #FDF2F2;
+    border: 1px solid rgba(181, 18, 27, 0.25);
+    color: #B5121B;
+  }
+  .badge-crimson {
+    @apply inline-flex items-center gap-1.5 font-button text-xs font-bold tracking-wider uppercase px-4 py-1.5 rounded-full;
+    background-color: #FDF2F2;
+    border: 1px solid rgba(143, 14, 21, 0.3);
+    color: #8F0E15;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ── ANIMATION KEYFRAMES ──
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes lightSweep {
+  0% {
+    left: -80%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  60% {
+    left: 140%;
+    opacity: 0;
+  }
+  100% {
+    left: 140%;
+    opacity: 0;
+  }
+}

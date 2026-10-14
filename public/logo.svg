@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 315" width="100%" height="100%">
+  <defs>
+    <!-- Metallic Gold Primary Gradient -->
+    <linearGradient id="vstGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF6C2" />
+      <stop offset="25%" stop-color="#F6E29C" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="75%" stop-color="#AA7B12" />
+      <stop offset="100%" stop-color="#7A5600" />
+    </linearGradient>
+
+    <!-- Metallic Gold Highlight Gradient -->
+    <linearGradient id="vstGoldLight" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="50%" stop-color="#FFF8D6" />
+      <stop offset="100%" stop-color="#AA7B12" />
+    </linearGradient>
+
+    <!-- Deep Crimson Maroon Gradient -->
+    <linearGradient id="vstCrimson" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C81818" />
+      <stop offset="40%" stop-color="#880000" />
+      <stop offset="80%" stop-color="#580000" />
+      <stop offset="100%" stop-color="#360000" />
+    </linearGradient>
+
+    <!-- Gold Border Metallic Gradient -->
+    <linearGradient id="vstBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF9D8" />
+      <stop offset="35%" stop-color="#E5C158" />
+      <stop offset="70%" stop-color="#B58618" />
+      <stop offset="100%" stop-color="#7A5600" />
+    </linearGradient>
+
+    <!-- Dark Metallic Core Gradient -->
+    <linearGradient id="vstDarkFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C2633" />
+      <stop offset="50%" stop-color="#0F1722" />
+      <stop offset="100%" stop-color="#080D14" />
+    </linearGradient>
+
+    <!-- 3D Depth Drop Shadow Filter -->
+    <filter id="popShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- 1. COMPLETE, CLOSED, PERFECTLY SYMMETRICAL DIAMOND EMBLEM -->
+  <g transform="translate(260, 108)" filter="url(#popShadow)">
+    <!-- Outer Continuous Gold Diamond Border -->
+    <polygon
+      points="0,-96 104,0 0,96 -104,0"
+      fill="url(#vstBorder)"
+      stroke="#3C0000"
+      stroke-width="3"
+    />
+
+    <!-- Inner Dark Metallic Facet -->
+    <polygon
+      points="0,-86 93,0 0,86 -93,0"
+      fill="url(#vstDarkFacet)"
+      stroke="url(#vstGold)"
+      stroke-width="1.2"
+    />
+
+    <!-- Delicate Inner Gold Trim Frame -->
+    <polygon
+      points="0,-78 84,0 0,78 -84,0"
+      fill="none"
+      stroke="url(#vstGoldLight)"
+      stroke-width="1"
+      opacity="0.85"
+    />
+
+    <!-- Top Gold 'S' / Chevron Upper Accent -->
+    <g>
+      <path
+        d="M0,-74 L68,-10 L44,-10 L0,-48 L-30,-18 L-42,-28 Z"
+        fill="url(#vstGold)"
+        stroke="#580000"
+        stroke-width="1.5"
+      />
+      <path
+        d="M0,-62 L54,-10 L38,-10 L0,-40 L-24,-16 L-32,-22 Z"
+        fill="#FFF8D0"
+        opacity="0.5"
+      />
+    </g>
+
+    <!-- Bottom Deep Crimson 'V' Monogram -->
+    <polygon
+      points="-74,-6 0,74 74,-6 50,-6 0,48 -50,-6"
+      fill="url(#vstCrimson)"
+      stroke="url(#vstBorder)"
+      stroke-width="2.5"
+    />
+
+    <!-- Central 3D 'T' Block -->
+    <g filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.65))">
+      <!-- Gold Outline & Base -->
+      <path
+        d="M-38,-34 H38 V-12 H14 V48 H-14 V-12 H-38 Z"
+        fill="url(#vstBorder)"
+        stroke="#3C0000"
+        stroke-width="2"
+      />
+      <!-- Deep Crimson Body -->
+      <path
+        d="M-33,-29 H33 V-16 H10 V43 H-10 V-16 H-33 Z"
+        fill="url(#vstCrimson)"
+      />
+      <!-- Crisp White Face -->
+      <path
+        d="M-27,-25 H27 V-20 H6 V38 H-6 V-20 H-27 Z"
+        fill="#FFFFFF"
+        stroke="#800000"
+        stroke-width="0.8"
+      />
+    </g>
+  </g>
+
+  <!-- 2. "VENKAT SAI" TYPOGRAPHY (Embossed Deep Red & Metallic Gold) -->
+  <g filter="url(#popShadow)">
+    <text
+      x="260"
+      y="238"
+      font-family="'Playfair Display', 'Times New Roman', serif"
+      font-size="46"
+      font-weight="900"
+      fill="#4A0000"
+      text-anchor="middle"
+      letter-spacing="4"
+    >
+      VENK<tspan fill="#8C660B">Λ</tspan>T SAI
+    </text>
+    <text
+      x="260"
+      y="236"
+      font-family="'Playfair Display', 'Times New Roman', serif"
+      font-size="46"
+      font-weight="900"
+      fill="#880000"
+      text-anchor="middle"
+      letter-spacing="4"
+    >
+      VENK<tspan fill="url(#vstGold)">Λ</tspan>T SAI
+    </text>
+  </g>
+
+  <!-- 3. "T R A V E L S" & METALLIC WINGS -->
+  <g transform="translate(260, 270)" filter="url(#popShadow)">
+    <path
+      d="M-195,-6 L-125,-6 M-185,-1 L-125,-1 M-175,4 L-125,4"
+      stroke="url(#vstBorder)"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <path
+      d="M125,-6 L195,-6 M125,-1 L185,-1 M125,4 L175,4"
+      stroke="url(#vstBorder)"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+    <text
+      x="0"
+      y="4"
+      font-family="'Poppins', 'Inter', sans-serif"
+      font-size="21"
+      font-weight="900"
+      fill="#111827"
+      text-anchor="middle"
+      letter-spacing="11"
+    >
+      TRAVELS
+    </text>
+  </g>
+
+  <!-- 4. BRAND TAGLINE -->
+  <text
+    x="260"
+    y="298"
+    font-family="'Poppins', 'Inter', sans-serif"
+    font-size="9.5"
+    font-weight="800"
+    fill="#334155"
+    text-anchor="middle"
+    letter-spacing="3.5"
+  >
+    SAFE JOURNEY <tspan fill="#880000">•</tspan> HAPPY DESTINATION
+  </text>
+</svg>
