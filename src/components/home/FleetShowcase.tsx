@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Fuel, ArrowRight, CheckCircle, Car } from 'lucide-react'
 import { IMAGES } from '../../data/images'
@@ -120,7 +120,8 @@ export default function FleetShowcase() {
                       ))}
                     </ul>
                     <Link
-                      to={`/booking?vehicle=${encodeURIComponent(vehicle.name)}`}
+                      to="/booking"
+                      search={{ vehicle: vehicle.name } as any}
                       className="w-full btn-primary text-xs sm:text-sm py-3.5 px-4 shadow-brand mt-auto"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">Book This Vehicle <ArrowRight size={14} /></span>

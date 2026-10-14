@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearch } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { MapPin, Calendar, Clock, Car, Phone, Mail, User, Shield, CheckCircle, ArrowRight, Users, Fuel } from 'lucide-react'
 import { COMPANY, CALL_URL, FLEET } from '../data/constants'
@@ -22,14 +22,14 @@ function normalizeFleet(raw: any[]): typeof FLEET {
 }
 
 export default function Booking() {
-  const [params] = useSearchParams()
+  const search = useSearch({ strict: false }) as Record<string, string | undefined>
 
-  const qPickup = params.get('pickup') || ''
-  const qDrop = params.get('drop') || ''
-  const qDate = params.get('date') || ''
-  const qTime = params.get('time') || ''
-  const qTrip = params.get('trip') || ''
-  const qVehicle = params.get('vehicle') || ''
+  const qPickup = search?.pickup || ''
+  const qDrop = search?.drop || ''
+  const qDate = search?.date || ''
+  const qTime = search?.time || ''
+  const qTrip = search?.trip || ''
+  const qVehicle = search?.vehicle || search?.service || ''
 
   const [form, setForm] = useState({
     tripType: qTrip || 'Outstation',

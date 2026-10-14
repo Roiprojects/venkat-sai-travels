@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@tanstack/react-router'
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'framer-motion'
 import { MapPin, Calendar, Clock, Car, ArrowRight, Sparkles } from 'lucide-react'
 import { COMPANY } from '../../data/constants'
@@ -78,15 +78,17 @@ export default function BookingCard() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const qs = new URLSearchParams({
-      pickup: form.pickup,
-      drop: form.drop,
-      trip: form.tripType,
-      date: form.date,
-      time: form.time,
-      vehicle: form.vehicle,
+    navigate({
+      to: '/booking',
+      search: {
+        pickup: form.pickup,
+        drop: form.drop,
+        trip: form.tripType,
+        date: form.date,
+        time: form.time,
+        vehicle: form.vehicle,
+      } as any,
     })
-    navigate(`/booking?${qs.toString()}`)
   }
 
   const inputClass =

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowRight, Phone, MessageCircle } from 'lucide-react'
 import { WHATSAPP_URL, CALL_URL } from '../../data/constants'

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { Phone, MessageCircle, ChevronDown, ArrowRight, Star, Sparkles } from 'lucide-react'
 import { WHATSAPP_URL, CALL_URL } from '../../data/constants'
 import { IMAGES } from '../../data/images'

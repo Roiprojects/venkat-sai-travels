@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Fuel, ArrowRight, CheckCircle, X, Shield, Phone } from 'lucide-react'
 import { FLEET, CALL_URL } from '../data/constants'
@@ -178,7 +178,8 @@ export default function Fleet() {
                           View Details
                         </button>
                         <Link
-                          to={`/booking?vehicle=${encodeURIComponent(vehicle.name)}`}
+                          to="/booking"
+                          search={{ vehicle: vehicle.name } as any}
                           className="btn-primary text-xs py-3 px-3 shadow-brand"
                         >
                           <span className="relative z-10 flex items-center justify-center gap-1.5">Book Now <ArrowRight size={13} /></span>
@@ -243,7 +244,8 @@ export default function Fleet() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <Link
-                    to={`/booking?vehicle=${encodeURIComponent(selected.name)}`}
+                    to="/booking"
+                    search={{ vehicle: selected.name } as any}
                     onClick={() => setSelected(null)}
                     className="btn-primary text-center text-xs py-3.5 rounded-full"
                   >

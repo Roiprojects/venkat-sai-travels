@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { pr, prAuth } from '../api/client'
+import { pr, prAuth, adminFetch } from '../api/client'
 
 export default function AdminAbout() {
   const [about, setAbout] = useState<any>({ founder: {}, timeline: [], values: [] })

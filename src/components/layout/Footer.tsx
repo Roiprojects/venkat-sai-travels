@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Linkedin, Youtube, Twitter } from 'lucide-react'
 import { WHATSAPP_URL } from '../../data/constants'
 import Logo from '../common/Logo'

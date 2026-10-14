@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import FadeUp from '../ui/FadeUp'
 import { useAdminData } from '../../hooks/useAdminData'

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { Plane, MapPin, Briefcase, Car, Crown, Heart, Users, Mountain, Star, Compass, Hotel, Clock } from 'lucide-react'
 import { IMAGES } from '../../data/images'

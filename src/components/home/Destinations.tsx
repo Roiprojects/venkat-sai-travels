@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { MapPin, ArrowRight } from 'lucide-react'
 import { IMAGES } from '../../data/images'
@@ -77,7 +77,8 @@ export default function Destinations() {
                     </div>
 
                     <Link
-                      to={`/booking?destination=${encodeURIComponent(dest.name)}`}
+                      to="/booking"
+                      search={{ destination: dest.name } as any}
                       className="w-full btn-primary text-xs sm:text-sm py-3 px-4 shadow-brand mt-auto"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">Book Route <ArrowRight size={14} /></span>

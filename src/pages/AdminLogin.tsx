@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
-import { authFetch, clearAdminToken } from '@/api/client'
+import { useState, useEffect } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { authFetch, getCurrentAdmin } from '../api/client'
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('')
@@ -9,26 +9,30 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    getCurrentAdmin().then((user) => {
+      if (user) {
+        navigate({ to: '/admin' })
+      }
+    })
+  }, [navigate])
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const data = await authFetch<{ token: string; username: string }>('login', {
+      await authFetch('login', {
         method: 'POST',
         body: JSON.stringify({ username, password }),
       })
-      localStorage.setItem('admin_token', data.token)
-      localStorage.setItem('admin_user', data.username)
-      navigate('/admin')
+      navigate({ to: '/admin' })
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
-
-  if (localStorage.getItem('admin_token')) return <Navigate to="/admin" replace />
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -38,13 +42,31 @@ export default function AdminLogin() {
         {error && <p className="text-red-600 text-sm mb-4 bg-red-50 p-2 rounded">{error}</p>}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-          <input autoComplete="off" type="text" value={username} onChange={e => setUsername(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500" required />
+          <input
+            autoComplete="off"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            required
+          />
         </div>
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input autoComplete="off" type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500" required />
+          <input
+            autoComplete="off"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            required
+          />
         </div>
-        <button type="submit" disabled={loading} className="w-full bg-brand-700 text-white py-3 rounded-lg font-semibold hover:bg-brand-800 transition-colors disabled:opacity-50">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-brand-700 text-white py-3 rounded-lg font-semibold hover:bg-brand-800 transition-colors disabled:opacity-50"
+        >
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>

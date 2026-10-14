@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { UserCheck, CreditCard, Star, Clock, Building2 } from 'lucide-react'
 import FadeUp from '../ui/FadeUp'
 import { IMAGES } from '../../data/images'

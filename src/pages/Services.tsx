@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { Plane, MapPin, Briefcase, Car, Crown, Heart, Users, Mountain, Star, Compass, Hotel, Clock, ArrowRight, CheckCircle } from 'lucide-react'
 import { IMAGES } from '../data/images'
 import FadeUp from '../components/ui/FadeUp'
@@ -165,7 +165,11 @@ export default function Services() {
                         </li>
                       ))}
                     </ul>
-                    <Link to={`/booking?service=${encodeURIComponent(service.title)}`} className="btn-primary text-xs sm:text-sm py-3 px-6 shadow-brand w-fit">
+                    <Link
+                      to="/booking"
+                      search={{ service: service.title } as any}
+                      className="btn-primary text-xs sm:text-sm py-3 px-6 shadow-brand w-fit"
+                    >
                       <span className="relative z-10 flex items-center justify-center gap-2">Book This Service <ArrowRight size={14} /></span>
                     </Link>
                   </div>
