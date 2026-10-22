@@ -15,8 +15,16 @@ export function getPool(): pg.Pool {
     if (!process.env.DATABASE_URL && !hasDiscreteVars) {
       throw new Error('Database is not configured: set DATABASE_URL or PGHOST/PGDATABASE/PGUSER/PGPASSWORD')
     }
+    const connectionString = process.env.DATABASE_URL || undefined
+    const isSsl = Boolean(
+      process.env.DATABASE_SSL === 'true' ||
+      process.env.PGSSL === 'true' ||
+      process.env.PGSSLMODE === 'require' ||
+      (connectionString && (connectionString.includes('sslmode=require') || connectionString.includes('ssl=true')))
+    )
     pool = new pg.Pool({
-      connectionString: process.env.DATABASE_URL || undefined,
+      connectionString,
+      ssl: isSsl ? { rejectUnauthorized: false } : undefined,
       max: env.pgPoolMax,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000,

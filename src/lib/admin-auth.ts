@@ -116,9 +116,40 @@ export async function invalidateSession(token: string | null): Promise<void> {
   await query('UPDATE admin_sessions SET revoked_at = NOW() WHERE token_hash = $1', [tokenHash])
 }
 
-export function validateCsrf(originHeader?: string | null, refererHeader?: string | null): boolean {
-  if (env.appOrigins.length === 0) return true
+export function validateCsrf(
+  originHeader?: string | null,
+  refererHeader?: string | null,
+  hostHeader?: string | null
+): boolean {
   const source = originHeader || (refererHeader ? new URL(refererHeader).origin : null)
   if (!source) return true
-  return env.appOrigins.includes(source.replace(/\/$/, ''))
+
+  const cleanSource = source.replace(/\/$/, '')
+
+  // 1. Explicitly configured APP_ORIGIN list (or wildcard *)
+  if (env.appOrigins.length > 0) {
+    if (env.appOrigins.includes(cleanSource) || env.appOrigins.includes('*')) {
+      return true
+    }
+  }
+
+  // 2. Automatically allow same-host and subdomains matching the current request Host
+  if (hostHeader) {
+    try {
+      const sourceUrl = new URL(cleanSource)
+      const cleanHost = hostHeader.split(':')[0].toLowerCase()
+      const sourceHost = sourceUrl.hostname.toLowerCase()
+
+      // Exact host match (works on main domain or any subdomain)
+      if (sourceHost === cleanHost) return true
+
+      // Allow www <-> apex domain or sibling subdomains on the same parent domain
+      if (sourceHost.endsWith(`.${cleanHost}`) || cleanHost.endsWith(`.${sourceHost}`)) {
+        return true
+      }
+    } catch {}
+  }
+
+  // 3. Fallback: if no APP_ORIGIN is specified, permit same-host
+  return env.appOrigins.length === 0
 }

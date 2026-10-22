@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Linkedin, Youtube, Twitter } from 'lucide-react'
-import { WHATSAPP_URL } from '../../data/constants'
+import { COMPANY, WHATSAPP_URL } from '../../data/constants'
 import Logo from '../common/Logo'
 import { api } from '../../api'
 
@@ -45,10 +45,12 @@ export default function Footer() {
             setFooterServices(svc.slice(0, 8).map((s: any) => s.title).filter(Boolean))
           }
         }
-      } catch (e) { console.error('Footer fetch error:', e) }
+      } catch (e) {
+        // Fallback gracefully when database / API is offline
+      }
     }
     load()
-    const interval = setInterval(load, 5000)
+    const interval = setInterval(load, 15000)
     return () => { cancelled = true; clearInterval(interval) }
   }, [])
 
@@ -64,14 +66,15 @@ export default function Footer() {
 
   const displayServices = footerServices.length ? footerServices : FALLBACK_SERVICES
 
-  const companyName = settings?.company_name || 'Venkat Sai Travels'
+  const companyName = settings?.company_name || COMPANY.name
   const tagline = settings?.company_tagline || "Bangalore's premium luxury travel partner since 2009. First-class travel with professional chauffeurs."
-  const email = settings?.company_email || ''
-  const line1 = settings?.company_address_line1 || ''
-  const line2 = settings?.company_address_line2 || ''
-  const city = settings?.company_city || ''
-  const hours = settings?.company_hours || ''
-  const phones = [settings?.company_phone_1, settings?.company_phone_2, settings?.company_phone_3].filter(Boolean) as string[]
+  const email = settings?.company_email || COMPANY.email
+  const line1 = settings?.company_address_line1 || COMPANY.address.line1
+  const line2 = settings?.company_address_line2 || COMPANY.address.line2
+  const city = settings?.company_city || COMPANY.address.city
+  const hours = settings?.company_hours || COMPANY.hours
+  const settingPhones = [settings?.company_phone_1, settings?.company_phone_2, settings?.company_phone_3].filter(Boolean) as string[]
+  const phones = settingPhones.length ? settingPhones : COMPANY.phones
 
   return (
     <footer className="bg-[#F7F7F5] text-[#555555] border-t border-[#E5E5E5] relative overflow-hidden">
@@ -151,34 +154,49 @@ export default function Footer() {
             {/* Column 4: Contact */}
             <div>
               <h4 className="font-heading text-base font-bold text-[#B5121B] mb-5 flex items-center gap-2">
-                <span className="w-4 h-0.5 bg-[#B5121B] inline-block rounded-full" />Contact
+                <span className="w-4 h-0.5 bg-[#B5121B] inline-block rounded-full" />Contact Us
               </h4>
               <ul className="space-y-3.5">
                 {line1 && (
-                  <li className="flex gap-3">
+                  <li className="flex gap-2.5 items-start">
                     <MapPin size={16} className="text-[#B5121B] flex-shrink-0 mt-0.5" />
-                    <p className="text-[#555555] text-xs sm:text-sm leading-relaxed font-light">
-                      {line1}<br />{line2}<br />{city}
+                    <p className="text-[#555555] text-xs sm:text-sm leading-relaxed font-normal">
+                      {line1}{line2 ? <><br />{line2}</> : null}{city ? <><br />{city}</> : null}
                     </p>
                   </li>
                 )}
-                {phones.map(p => (
-                  <li key={p}>
-                    <a href={`tel:+91${p}`} className="flex items-center gap-2 text-[#555555] hover:text-[#B5121B] text-xs sm:text-sm transition-colors font-medium">
-                      <Phone size={14} className="text-[#B5121B]" />{p}
-                    </a>
-                  </li>
-                ))}
+                {phones.map(p => {
+                  const digits = p.replace(/\D/g, '')
+                  const displayPhone = digits.length === 10
+                    ? `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`
+                    : p
+                  return (
+                    <li key={p}>
+                      <a
+                        href={`tel:+91${digits.slice(-10)}`}
+                        className="flex items-center gap-2.5 text-[#555555] hover:text-[#B5121B] text-xs sm:text-sm transition-colors font-medium group"
+                      >
+                        <Phone size={14} className="text-[#B5121B] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                        <span>{displayPhone}</span>
+                      </a>
+                    </li>
+                  )
+                })}
                 {email && (
                   <li>
-                    <a href={`mailto:${email}`} className="flex items-center gap-2 text-[#555555] hover:text-[#B5121B] text-xs sm:text-sm transition-colors font-medium">
-                      <Mail size={14} className="text-[#B5121B]" />{email}
+                    <a
+                      href={`mailto:${email}`}
+                      className="flex items-center gap-2.5 text-[#555555] hover:text-[#B5121B] text-xs sm:text-sm transition-colors font-medium group"
+                    >
+                      <Mail size={14} className="text-[#B5121B] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                      <span>{email}</span>
                     </a>
                   </li>
                 )}
                 {hours && (
-                  <li className="flex items-center gap-2 text-[#555555] text-xs sm:text-sm">
-                    <Clock size={14} className="text-[#B5121B]" />{hours}
+                  <li className="flex items-center gap-2.5 text-[#555555] text-xs sm:text-sm font-normal">
+                    <Clock size={14} className="text-[#B5121B] flex-shrink-0" />
+                    <span>{hours}</span>
                   </li>
                 )}
               </ul>

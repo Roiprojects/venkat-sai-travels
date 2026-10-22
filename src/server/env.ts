@@ -5,16 +5,41 @@
  * `process.loadEnvFile` (does not override variables already set by the
  * process manager). Never import this module from client code.
  */
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 let loaded = false
 
 function loadEnvOnce() {
   if (loaded) return
   loaded = true
-  const file = process.env.ENV_FILE || '.env'
-  if (existsSync(file) && typeof process.loadEnvFile === 'function') {
-    process.loadEnvFile(file)
+  const candidates = [process.env.ENV_FILE, '.env', 'server/.env', '../.env'].filter(Boolean) as string[]
+  for (const file of candidates) {
+    if (existsSync(file)) {
+      try {
+        if (typeof process.loadEnvFile === 'function') {
+          process.loadEnvFile(file)
+          return
+        }
+      } catch {}
+      try {
+        const text = readFileSync(file, 'utf8')
+        for (const line of text.split(/\r?\n/)) {
+          const trimmed = line.trim()
+          if (!trimmed || trimmed.startsWith('#')) continue
+          const eq = trimmed.indexOf('=')
+          if (eq === -1) continue
+          const k = trimmed.slice(0, eq).trim()
+          let v = trimmed.slice(eq + 1).trim()
+          if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+            v = v.slice(1, -1)
+          }
+          if (process.env[k] === undefined) {
+            process.env[k] = v
+          }
+        }
+        return
+      } catch {}
+    }
   }
 }
 

@@ -3,8 +3,8 @@ module.exports = {
     {
       name: 'venkat-sai-web',
       cwd: './',
-      script: 'node_modules/.bin/srvx',
-      args: '--prod -s ../client dist/server/server.js',
+      script: 'server.mjs',
+      args: '--prod -s dist/client dist/server/server.js',
       env: {
         NODE_ENV: 'production',
         PORT: 3000,

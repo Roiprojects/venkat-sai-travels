@@ -89,7 +89,7 @@ export function useAdminData() {
       })
     }
     load()
-    const interval = setInterval(load, 5000)
+    const interval = setInterval(load, 30000)
     return () => { cancelled = true; clearInterval(interval) }
   }, [])
 

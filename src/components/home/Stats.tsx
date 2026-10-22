@@ -1,8 +1,18 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
-import CountUp from 'react-countup'
+import CountUpRaw from 'react-countup'
 import FadeUp from '../ui/FadeUp'
 import { useAdminData } from '../../hooks/useAdminData'
+
+// Normalize ESM/CJS default export interop between SSR and browser bundling
+const CountUp = (
+  typeof CountUpRaw === 'function'
+    ? CountUpRaw
+    : typeof (CountUpRaw as any)?.default === 'function'
+      ? (CountUpRaw as any).default
+      : (CountUpRaw as any)?.default?.default || CountUpRaw
+) as React.ComponentType<any>
+
 
 const FALLBACK_STATS = [
   { value: 22, suffix: '+', label: 'Years of Experience' },
@@ -15,8 +25,13 @@ const FALLBACK_STATS = [
 export default function Stats() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [mounted, setMounted] = useState(false)
   const { stats } = useAdminData()
   const items = stats.length ? stats : FALLBACK_STATS
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <section ref={ref} className="py-10 sm:py-14 bg-[#FAFAF8] relative overflow-hidden px-4 sm:px-8 lg:px-16 border-b border-[#E5E5E5]">
@@ -37,7 +52,7 @@ export default function Stats() {
               <div className="bg-white rounded-2xl sm:rounded-3xl px-2.5 sm:px-4 py-5 sm:py-6 border border-[#E5E5E5] shadow-card hover:border-brand-300 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-400">
                 <div className="font-heading text-2xl sm:text-3xl lg:text-[1.85rem] xl:text-4xl font-extrabold mb-1.5 sm:mb-2 tracking-tight whitespace-nowrap flex items-baseline justify-center">
                   <span className="text-[#B5121B]">
-                    {inView ? (
+                    {mounted && inView ? (
                       <CountUp end={stat.value} duration={2.5} delay={i * 0.1} separator="," />
                     ) : '0'}
                   </span>

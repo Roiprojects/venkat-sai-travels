@@ -27,9 +27,12 @@ import { resolveResource, parseQueryParams, handleGet, handleInsert, handleUpdat
 
 export const apiApp = new H3()
 
-// Helper to authenticate request from cookie
+// Helper to authenticate request from cookie (supports both secure and fallback cookie names)
 async function getAuthUser(event: any): Promise<AdminUser | null> {
-  const token = getCookie(event, COOKIE_NAME)
+  const token =
+    getCookie(event, COOKIE_NAME) ||
+    getCookie(event, '__Host-vst_session') ||
+    getCookie(event, 'vst_session')
   return validateSession(token || null)
 }
 
@@ -117,7 +120,10 @@ apiApp.post('/api/auth/login', async (event) => {
 
 // 3. Auth: logout
 apiApp.post('/api/auth/logout', async (event) => {
-  const token = getCookie(event, COOKIE_NAME)
+  const token =
+    getCookie(event, COOKIE_NAME) ||
+    getCookie(event, '__Host-vst_session') ||
+    getCookie(event, 'vst_session')
   if (token) {
     await invalidateSession(token)
   }
@@ -238,7 +244,8 @@ apiApp.all('/api/**', async (event) => {
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
     const origin = getRequestHeader(event, 'origin')
     const referer = getRequestHeader(event, 'referer')
-    if (!validateCsrf(origin, referer)) {
+    const host = getRequestHeader(event, 'x-forwarded-host') || getRequestHeader(event, 'host')
+    if (!validateCsrf(origin, referer, host)) {
       throw createError({ statusCode: 403, message: 'Forbidden: invalid request origin' })
     }
   }
@@ -292,9 +299,22 @@ apiApp.all('/api/**', async (event) => {
     throw createError({ statusCode: 405, message: `Method ${method} not allowed` })
   } catch (err: any) {
     if (err.statusCode) throw err
+    const isDbConnError =
+      err.code === 'ECONNREFUSED' ||
+      err.code === 'ETIMEDOUT' ||
+      err.message?.includes('ECONNREFUSED') ||
+      err.message?.includes('ETIMEDOUT') ||
+      err.message?.includes('Database is not configured')
+
+    const statusCode = err.message?.includes('not found')
+      ? 404
+      : isDbConnError
+        ? 503
+        : 400
+
     throw createError({
-      statusCode: err.message.includes('not found') ? 404 : 400,
-      message: err.message,
+      statusCode,
+      message: isDbConnError ? 'Database temporarily unavailable' : err.message,
     })
   }
 })

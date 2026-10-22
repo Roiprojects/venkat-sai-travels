@@ -5,7 +5,14 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [
-    tanstackStart(),
+    tanstackStart({
+      client: {
+        entry: './src/client.tsx',
+      },
+      server: {
+        entry: './src/server.ts',
+      },
+    }),
     viteReact(),
   ],
   resolve: {
