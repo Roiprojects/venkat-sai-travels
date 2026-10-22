@@ -4,7 +4,7 @@ module.exports = {
       name: 'venkat-sai-web',
       cwd: './',
       script: 'server.mjs',
-      args: '--prod -s dist/client dist/server/server.js',
+      args: '--prod -s ../client dist/server/server.js',
       env: {
         NODE_ENV: 'production',
         PORT: 3000,

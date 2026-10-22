@@ -8,7 +8,7 @@ import { main } from 'srvx/cli'
 
 // If no arguments were passed, supply the default production serve arguments
 if (process.argv.slice(2).length === 0) {
-  process.argv.push('--prod', '-s', 'dist/client', 'dist/server/server.js')
+  process.argv.push('--prod', '-s', '../client', 'dist/server/server.js')
 }
 
 await main({

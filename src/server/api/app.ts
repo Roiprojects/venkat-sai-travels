@@ -21,7 +21,7 @@ import {
   validateCsrf,
   AdminUser,
 } from '../../lib/admin-auth'
-import { query } from '../db'
+import { query, testDbConnection } from '../db'
 import { env } from '../env'
 import { resolveResource, parseQueryParams, handleGet, handleInsert, handleUpdate, handleDelete } from './crud'
 
@@ -38,15 +38,18 @@ async function getAuthUser(event: any): Promise<AdminUser | null> {
 
 // 1. Health check
 apiApp.get('/api/health', async () => {
-  let dbStatus = 'ok'
-  try {
-    await query('SELECT 1')
-  } catch (err: any) {
-    dbStatus = `error: ${err.message}`
-  }
+  const dbTest = await testDbConnection()
   return {
-    status: 'ok',
-    db: dbStatus,
+    status: dbTest.ok ? 'healthy' : 'degraded',
+    database: dbTest.ok ? 'connected' : 'error',
+    details: dbTest.ok
+      ? {
+          database: dbTest.info?.database,
+          schema: dbTest.info?.schema,
+          user: dbTest.info?.user,
+          serverVersion: dbTest.info?.version?.split(' ')[0] + ' ' + dbTest.info?.version?.split(' ')[1],
+        }
+      : { error: dbTest.error },
     timestamp: new Date().toISOString(),
   }
 })

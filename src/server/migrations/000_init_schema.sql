@@ -4,9 +4,11 @@
 CREATE TABLE IF NOT EXISTS admin_users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(200) DEFAULT 'admin@venkatsaitravels.com',
     password_hash TEXT NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     role VARCHAR(50) DEFAULT 'authenticator',
+    last_login TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -16,20 +18,20 @@ CREATE TABLE IF NOT EXISTS admins (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    role VARCHAR(50) DEFAULT 'authenticator',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Seed initial admin: admin / admin (bcrypt hash)
-INSERT INTO admin_users (username, password_hash, is_active, role)
+INSERT INTO admin_users (username, email, password_hash, is_active, role)
 VALUES (
     'admin',
+    'admin@venkatsaitravels.com',
     '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeZeQvJQfH3qLxH6K',
     TRUE,
     'authenticator'
 ) ON CONFLICT (username) DO NOTHING;
 
-INSERT INTO admins (username, password_hash, role)
+INSERT INTO admins (username, password_hash)
 VALUES (
     'admin',
     '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeZeQvJQfH3qLxH6K'

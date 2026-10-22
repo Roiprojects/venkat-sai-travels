@@ -6,7 +6,7 @@ import pg from 'pg'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const rootDir = resolve(__dirname, '..')
 
-// Load env if .env exists
+// Load environment variables from .env
 for (const envFile of [resolve(rootDir, '.env'), resolve(rootDir, 'server', '.env')]) {
   if (existsSync(envFile)) {
     try {
@@ -36,44 +36,80 @@ for (const envFile of [resolve(rootDir, '.env'), resolve(rootDir, 'server', '.en
   }
 }
 
-const connectionString = process.env.DATABASE_URL
-if (!connectionString && !process.env.PGHOST) {
-  console.error('Neither DATABASE_URL nor PGHOST is set. Cannot run migrations.')
+const host = process.env.DB_HOST || process.env.PGHOST
+const port = Number(process.env.DB_PORT || process.env.PGPORT || 5432)
+const database = process.env.DB_DATABASE || process.env.PGDATABASE || process.env.DB_NAME
+const user = process.env.DB_USERNAME || process.env.PGUSER || process.env.DB_USER
+const password = process.env.DB_PASSWORD || process.env.PGPASSWORD
+const connectionString = process.env.DATABASE_URL || undefined
+
+if (!connectionString && (!host || !database)) {
+  console.error('[migrate] Database is not configured: set DB_HOST/DB_DATABASE/DB_USERNAME/DB_PASSWORD or DATABASE_URL.')
   process.exit(1)
 }
 
-const isSsl = Boolean(
-  process.env.DATABASE_SSL === 'true' ||
-  process.env.PGSSL === 'true' ||
-  process.env.PGSSLMODE === 'require' ||
-  (connectionString && (connectionString.includes('sslmode=require') || connectionString.includes('ssl=true')))
-)
+const rawSslMode = (
+  process.env.DB_SSLMODE ||
+  process.env.PGSSLMODE ||
+  (process.env.DATABASE_SSL === 'true' ? 'require' : '') ||
+  'disable'
+).toLowerCase()
+
+const ssl = rawSslMode === 'disable' || rawSslMode === 'off' || rawSslMode === 'false'
+  ? false
+  : { rejectUnauthorized: false }
+
+const poolConfig = connectionString
+  ? { connectionString, ssl }
+  : { host, port, database, user, password, ssl }
 
 const pool = new pg.Pool({
-  connectionString,
-  ssl: isSsl ? { rejectUnauthorized: false } : undefined,
+  ...poolConfig,
+  connectionTimeoutMillis: 10_000,
 })
 
 async function run() {
   const client = await pool.connect()
   try {
-    console.log('Applying migrations...')
+    console.log(`[migrate] Connecting to database ${database || 'from URL'}...`)
+
+    // Ensure migration tracking table exists
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        version VARCHAR(255) PRIMARY KEY,
+        applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `)
+
     const migrationsDir = resolve(rootDir, 'src', 'server', 'migrations')
     const files = readdirSync(migrationsDir)
       .filter((f) => f.endsWith('.sql'))
       .sort()
 
+    const appliedRes = await client.query('SELECT version FROM schema_migrations;')
+    const appliedVersions = new Set(appliedRes.rows.map((r) => r.version))
+
     for (const file of files) {
+      if (appliedVersions.has(file)) {
+        console.log(`[migrate] Skipping ${file} (already applied)`)
+        continue
+      }
+
+      console.log(`[migrate] Applying ${file}...`)
       const sqlPath = resolve(migrationsDir, file)
       const sql = readFileSync(sqlPath, 'utf8')
+
       await client.query('BEGIN')
       await client.query(sql)
+      await client.query('INSERT INTO schema_migrations (version) VALUES ($1)', [file])
       await client.query('COMMIT')
-      console.log(`Migration ${file} applied successfully.`)
+      console.log(`[migrate] Successfully applied ${file}`)
     }
+
+    console.log('[migrate] All migrations are up to date.')
   } catch (err) {
     await client.query('ROLLBACK').catch(() => {})
-    console.error('Migration failed:', err)
+    console.error('[migrate] Migration error:', err.message)
     process.exit(1)
   } finally {
     client.release()

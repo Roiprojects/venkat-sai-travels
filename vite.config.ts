@@ -7,10 +7,10 @@ export default defineConfig({
   plugins: [
     tanstackStart({
       client: {
-        entry: './src/client.tsx',
+        entry: './client.tsx',
       },
       server: {
-        entry: './src/server.ts',
+        entry: './server.ts',
       },
     }),
     viteReact(),

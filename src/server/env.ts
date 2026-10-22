@@ -78,5 +78,5 @@ export const env = {
   /** Secure cookies (and the __Host- prefix) default on in production. */
   cookieSecure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : isProduction,
   allowPasswordReset: process.env.ALLOW_PASSWORD_RESET === 'true',
-  pgPoolMax: int('PG_POOL_MAX', 10),
+  pgPoolMax: int('DB_POOL_MAX', int('PG_POOL_MAX', 10)),
 } as const
